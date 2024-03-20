@@ -2,10 +2,7 @@ from constant import *
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib
 import matplotlib.pyplot as plt
-import os
-import operator
 import math
 from scipy.stats import friedmanchisquare
 from scikit_posthocs import posthoc_nemenyi_friedman

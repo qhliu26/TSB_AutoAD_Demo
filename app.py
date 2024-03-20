@@ -1,6 +1,3 @@
-from collections import namedtuple
-import altair as alt
-import math
 import pandas as pd
 import streamlit as st
 from PIL import Image
@@ -8,7 +5,6 @@ import plotly.graph_objs as go
 import plotly.express as px
 from constant import *
 from utils import *
-from graphviz import Digraph
 #plt.style.use('dark_background')
 st.set_page_config(page_title="AutoTSAD")
 

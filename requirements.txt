@@ -1,0 +1,13 @@
+pandas
+streamlit
+matplotlib
+numpy
+seaborn
+plotly
+bidict
+networkx
+math
+pycatch22
+scipy==1.12.0
+scikit-learn==1.2.2
+scikit_posthocs
