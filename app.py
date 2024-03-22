@@ -8,7 +8,7 @@ from utils import *
 #plt.style.use('dark_background')
 st.set_page_config(page_title="AutoTSAD")
 
-df = pd.read_csv('data/accuracy_table/{}.csv'.format('VUS_PR'))
+df = pd.read_csv('data/accuracy_table/{}.csv'.format('VUS-PR'))
 df['filename'] = df['file'].str.split('/').str[1]
 df['dataset'] = df['file'].str.split('/').str[0]
 df = df.set_index('filename')
@@ -17,6 +17,7 @@ with st.sidebar:
     st.markdown('# AutoTSAD Engine') 
     st.markdown('## Please Select :point_down:') 
     metric_name = st.selectbox('Evaluation Metric', list_measures)
+    # metric_name = metric_name.split('-')[0]+'_'+metric_name.split('-')[1]
     
     container_dataset = st.container()  
     all_dataset = st.checkbox("Select all", key='all_dataset')
@@ -49,11 +50,13 @@ tab_desc, tab_benchmark, tab_eva, tab_exploration = st.tabs(["Overview", "Benchm
 
 with tab_desc:
     st.markdown(description_intro)
-    image = Image.open('figures/AutoTSAD.png')
-    st.image(image, caption='Overview of AutoTSAD benchmark')
+
 
 with tab_benchmark:
-    st.markdown('### Taxonomy of Automated Solutions for Time Series')
+    st.markdown(benchmark_overview)
+    image = Image.open('figures/AutoTSAD.png')
+    st.image(image, caption='Overview of AutoTSAD benchmark')
+    st.markdown('### 2. Taxonomy of Automated Solutions for Time Series')
     # labels = [
     #     "AutoTSAD", 
     #     "Model Selection", "Model Generation",
@@ -88,16 +91,14 @@ with tab_benchmark:
         # treemapcolorway=["#3cb371", "#ffd700", "#3cb371", "#ffd700"])
     st.plotly_chart(fig)
 
-    st.markdown('### Dataset Overview')
     st.markdown(description_dataset)
-    st.markdown('### Candidate Model Set')
     st.markdown(description_candidate)
 
 
 
 with tab_eva:
     st.markdown('# Evaluation Overview')
-    tab_acc, tab_time, tab_ms = st.tabs(["Accuracy Evaluation", "Detection Time", "Model Selected Distribution"])
+    tab_acc, tab_time, tab_ms = st.tabs(["Accuracy Evaluation", "Runtime Analysis", "Model Selected Distribution"])
     with tab_acc:
         st.markdown('### Evaluation Metrics: {}'.format(metric_name))
         # eva_type_col = st.columns([1])
@@ -131,14 +132,8 @@ with tab_eva:
             df_toplot = df_toplot.drop_duplicates()
 
         if len(df_toplot.columns) <= 5:        
-            st.markdown("""
-                <style>
-                .color-text {
-                    color: red;
-                }
-                </style>
-                <p class="color-text">Note: Please select automated solutions in the left panel AND types of anomaly in the above !</p>
-                """, unsafe_allow_html=True)
+            st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel AND types of anomaly in the above :point_up_2:")
+
         else:
             df_toplot = df_toplot[Comparaed_Solution_Pool]
             st.dataframe(df_toplot)
@@ -151,14 +146,7 @@ with tab_eva:
         det_time, det_time_text, exe_time, exe_time_text, methods_det, methods_exe, acc_det, acc_exe = get_bubble_data(acc_df=df, det_time_df=det_time_df, exe_time_df=exe_time_df, methods_variant=Comparaed_Solution_Pool)
 
         if len(df_toplot.columns) <= 5:        
-            st.markdown("""
-                <style>
-                .color-text {
-                    color: red;
-                }
-                </style>
-                <p class="color-text">Note: Please select automated solutions in the left panel!</p>
-                """, unsafe_allow_html=True)
+            st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel")
         else:    
             fig = go.Figure(data=[go.Scatter(
                 x=methods_det,

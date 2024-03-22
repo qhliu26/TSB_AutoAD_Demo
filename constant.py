@@ -1,6 +1,7 @@
 from bidict import bidict
 
-list_measures = ['VUS_PR', 'VUS_ROC', 'AUC_ROC', 'AUC_PR']
+# list_measures = ['VUS_PR', 'VUS_ROC', 'AUC_ROC', 'AUC_PR']
+list_measures = ['VUS-PR', 'VUS-ROC', 'AUC-ROC', 'AUC-PR']
 
 baseline = ['Oracle', 'GB', 'SS', 'Random (D)', 'Random (TS)']
 
@@ -38,25 +39,37 @@ all_solution = ['EM', 'MV', 'CQ (XB)', 'CQ (Silhouette)', 'CQ (Hubert)', 'CQ (ST
             'Aug (Orig)', 'Aug (Ens)', 'Aug (Majority Voting)', 'Clean (Majority)', 'Clean (Individual)', 'Clean (Ratio)', 'Clean (Avg)', 'Booster']
 
 description_intro = f"""
-# Dive into AutoTSAD
-### :star: Automated Solutions for Time Series Anomaly Detection
+# :surfer: Dive into AutoTSAD
+#### Automated Solutions for Time-Series Anomaly Detection
+
+### 1. Abstract
 
 Time series anomaly detection is a fundamental data analytics task across scientific fields and industries. Despite significant attention from academia and industry in recent years, the effectiveness of the proposed anomaly detectors is restricted to specific domains. It is worth noting that a model that performs well on one dataset may not perform well on another. Therefore, how to select the optimal model for a particular dataset has emerged as a pressing issue. However, there is a noticeable gap in the existing literature when it comes to providing a comprehensive review of the ongoing efforts in this field. The evaluation of proposed methods across different datasets and under varying assumptions may create an illusion of progress. To date, there is no systematic evaluation conducted to assess the performance of these methods relative to each other. In this paper, we (i) review the existing literature on automated anomaly detection and provide a taxonomy; (ii) introduce a comprehensive benchmark AutoTSAD which comprises 18 different methods and 60 variants; (iii) conduct a systematic evaluation on 1918 different time series across 18 datasets collected from various domains. Our study uncovers a significant gap, where half of the proposed solutions to date do not statistically outperform a simple random choice. We also identify the challenges faced by existing approaches and outline potential research directions. To foster the development of new emerging solutions, we open-source our benchmark. Our aim for this study is to act as a catalyst, steering research efforts towards automated solutions in time series anomaly detection.
 
 Github repo: https://github.com/TheDatumOrg/AutoTSAD
 
-## Contributors
+### 2. Contributors
 
 * [Qinghua Liu](https://qhliu26.github.io) (The Ohio State University)
 * [Seunghak Lee](https://www.cs.cmu.edu/~seunghak) (Meta)
 * [John Paparrizos](https://www.paparrizos.org) (The Ohio State University)
 
-## Benchamrk Overview
+### 3. User Manual
 
-We use M1, M2, and M3 to represent the candidate models. (a) depicts the standard evaluation pipeline for anomaly detectors. (b) depicts the pretraining pipeline for pretraining-based model selectors. (c) outlines the process for Model Selection which includes two main categories: (c.1) Internal Evaluation and (c.2) Pretraining-based Method. The output is the chosen anomaly detector that can then be applied to the time series data. (d) shows the approach for Model Generation which includes: (d.1) Ensembling-based and (d.2) Pseudo-label-based Methods. The result can be considered as an anomaly detector on its own.
 """
 
+benchmark_overview = f"""
+### 1. Benchamrk Overview
+
+We use M1, M2, and M3 to represent the candidate models. (a) depicts the standard evaluation pipeline for anomaly detectors. (b) depicts the pretraining pipeline for pretraining-based model selectors. (c) outlines the process for Model Selection which includes two main categories: (c.1) Internal Evaluation and (c.2) Pretraining-based Method. The output is the chosen anomaly detector that can then be applied to the time series data. (d) shows the approach for Model Generation which includes: (d.1) Ensembling-based and (d.2) Pseudo-label-based Methods. The result can be considered as an anomaly detector on its own.
+
+"""
+
+
 description_dataset = f"""
+
+### 3. Dataset Overview
+
 | Dataset      | Description                                  |
 |--------------|----------------------------------------------|
 | Dodgers      | unusual traffic after a Dodgers game         |
@@ -81,6 +94,9 @@ description_dataset = f"""
 
 
 description_candidate = f"""
+
+### 4. Candidate Model Set
+
 A value of 1 in `Win` indicates using the max periodicity of the time series as the sliding window length, and 2 denotes the second-max periodicity. A value of 0 implies that we do not apply the sliding window strategy, with each time step processed individually. `Model Hyperparameter` outlines the different hyperparameter settings (see TSB for detailed definitions). We use a (Win, HP) tuple to specify hyperparameter configurations for each candidate model in `Candidate Model`.
 
 | Method | Win        | Model Hyperparameter                                      | Candidate Model              |
