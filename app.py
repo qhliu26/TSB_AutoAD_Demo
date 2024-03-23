@@ -49,6 +49,8 @@ df = df.set_index('filename')
 tab_desc, tab_benchmark, tab_eva, tab_exploration = st.tabs(["Overview", "Benchmark", "Evaluation", "Data Exploration"]) 
 
 with tab_desc:
+    st.markdown("## :surfer: Dive into AutoTSAD")
+    st.markdown("##### Automated Solutions for Time-Series Anomaly Detection")
     st.markdown(description_intro)
 
 
@@ -56,7 +58,7 @@ with tab_benchmark:
     st.markdown(benchmark_overview)
     image = Image.open('figures/AutoTSAD.png')
     st.image(image, caption='Overview of AutoTSAD benchmark')
-    st.markdown('### 2. Taxonomy of Automated Solutions for Time Series')
+    st.markdown('#### 2. Taxonomy of Automated Solutions for Time Series')
     # labels = [
     #     "AutoTSAD", 
     #     "Model Selection", "Model Generation",
@@ -100,7 +102,7 @@ with tab_eva:
     st.markdown('# Evaluation Overview')
     tab_acc, tab_time, tab_ms = st.tabs(["Accuracy Evaluation", "Runtime Analysis", "Model Selected Distribution"])
     with tab_acc:
-        st.markdown('### Evaluation Metrics: {}'.format(metric_name))
+        st.markdown('#### Evaluation Metrics: {}'.format(metric_name))
         # eva_type_col = st.columns([1])
         # with eva_type_col:
         #     eva_type = st.selectbox('Anomaly Type', ['All', 'Single Anomaly', 'Multiple Anomaly', 'Point Anomaly', 'Sequence Anomaly'])
@@ -136,9 +138,11 @@ with tab_eva:
 
         else:
             df_toplot = df_toplot[Comparaed_Solution_Pool]
-            st.dataframe(df_toplot)
             plot_box_plot(all_df=df, target_df=df_toplot, methods_variant=Comparaed_Solution_Pool, metric_name=metric_name)
-    
+            st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>Table 1: Performance Comparision</h3>", unsafe_allow_html=True)
+            st.dataframe(df_toplot)
+
     with tab_time:
         st.markdown(runtime_intro)
         det_time_df = pd.read_csv('data/runtime_table/detection_time.csv')
@@ -155,17 +159,17 @@ with tab_eva:
                 mode='markers',
                 marker=dict(
                     opacity=.7,
-                    color='red',
+                    color='lightblue',
                     line = dict(width=1, color = '#1f77b4'),
                     size=det_time,
                     sizemode='area',
-                    sizeref=2.*max(det_time)/(80.**2),
+                    sizeref=2.*max(det_time)/(60.**2),
                     sizemin=4))])
-            fig.update_xaxes(tickfont_size=16)
-            fig.update_yaxes(tickfont_size=16)
+            fig.update_xaxes(tickfont_size=14)
+            fig.update_yaxes(tickfont_size=14)
             fig.update_layout(title=f'{metric_name} vs Detection Time (Fast -> Slow)',
                             yaxis_title=f'{metric_name}',
-                            showlegend=False, width=800, height=600, template="plotly_white", font=dict(size=19, color="black"))
+                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
             st.plotly_chart(fig)
 
             fig = go.Figure(data=[go.Scatter(
@@ -175,23 +179,23 @@ with tab_eva:
                 mode='markers',
                 marker=dict(
                     opacity=.7,
-                    color='red',
+                    color='lightblue',
                     line = dict(width=1, color = '#1f77b4'),
                     size=det_time,
                     sizemode='area',
-                    sizeref=2.*max(det_time)/(80.**2),
+                    sizeref=2.*max(det_time)/(60.**2),
                     sizemin=4))])
-            fig.update_xaxes(tickfont_size=16)
-            fig.update_yaxes(tickfont_size=16)
+            fig.update_xaxes(tickfont_size=14)
+            fig.update_yaxes(tickfont_size=14)
             fig.update_layout(title=f'{metric_name} vs Execution Time (Fast -> Slow)',
                             yaxis_title=f'{metric_name}',
-                            showlegend=False, width=800, height=600, template="plotly_white", font=dict(size=19, color="black"))
+                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
             st.plotly_chart(fig)
 
 
     with tab_ms:
-        st.markdown('### (1) Pretraining-based Model Selection')
-        st.markdown('#### In-distribution vs Out-of-distriution')
+        st.markdown('#### (1) Pretraining-based Model Selection')
+        st.markdown('##### In-distribution vs Out-of-distriution')
 
         ms_distribution_pretraining_col, _, _ = st.columns([1, 1, 1])
         with ms_distribution_pretraining_col:
@@ -212,6 +216,7 @@ with tab_eva:
                     for i in keys:
                         keys_name.append(det_name_mapping[i])
                     fig = px.bar(x=keys_name, y=list(values), labels={'x':'Anomaly Detector', 'y':'Count'},title=method_case)
+                    fig.update_layout(height=300)
                     st.plotly_chart(fig)
 
                 fig = plt.figure(figsize=(6, 6))

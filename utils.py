@@ -28,7 +28,7 @@ def plot_box_plot(all_df, target_df, methods_variant, metric_name):
         fig = plt.figure(figsize=(10, min(30, max(1, int(0.40*len(target_df.columns))))))
         g = sns.boxplot(data=target_df, order=order, palette="husl", showfliers = False, orient='h')
         # plt.title("Figure 1: Boxplot", fontsize=18)
-        st.markdown("<h3 style='text-align: center;'>Figure 1: Boxplot</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center;'>Figure 1: Summary of Accuracy Evaluation</h3>", unsafe_allow_html=True)
         plt.xlabel(metric_name, fontsize=16)
         st.pyplot(fig)
 
