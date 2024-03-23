@@ -427,6 +427,13 @@ def run_model(ts_data, method_selected_exp):
         most_voted = counter.most_common(1)
         det = Candidate_Model_Set[int(most_voted[0][0])]
         success = True
+
+        counter = dict(counter)
+        vote_summary = {det_name_mapping[detector]:0 for detector in Candidate_Model_Set}
+        for key in counter:
+            key = int(key)
+            vote_summary[det_name_mapping[Candidate_Model_Set[key]]] = counter[key]
+
     elif method_selected_exp == 'CLF':
         ts_win = split_ts(ts_data, window_size=1024)
         meta_mat = np.zeros([ts_win.shape[0], 24])
@@ -444,12 +451,19 @@ def run_model(ts_data, method_selected_exp):
         most_voted = counter.most_common(1)
         det = Candidate_Model_Set[int(most_voted[0][0])]
         success = True
+
+        counter = dict(counter)
+        vote_summary = {det_name_mapping[detector]:0 for detector in Candidate_Model_Set}
+        for key in counter:
+            key = int(key)
+            vote_summary[det_name_mapping[Candidate_Model_Set[key]]] = counter[key]
+
     else:
         st.markdown("Method not supported yet... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
         success = False
     
     if success:
-        return det, success
+        return det_name_mapping[det], success, vote_summary
     else:
-        return Candidate_Model_Set, success
+        return Candidate_Model_Set, success, success
     

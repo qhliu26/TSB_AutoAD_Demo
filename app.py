@@ -322,6 +322,10 @@ with tab_exploration:
                 method_display.append(method_selected_exp)
                 st.dataframe(df.loc[time_series_selected_exp, method_display])
             else:
-                pred_detector, success = run_model(ts_data, method_selected_exp)
+                pred_detector, success, vote_summary = run_model(ts_data, method_selected_exp)
                 if success:
-                    st.markdown(f"### :star: Selected Model: {pred_detector}")
+                    st.markdown(f"#### :star: Selected Model: {pred_detector}")
+                    st.markdown(f"#### Voting details:")
+                    st.bar_chart(vote_summary)
+                else:
+                    st.markdown(f"#### Failed at generating results... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
