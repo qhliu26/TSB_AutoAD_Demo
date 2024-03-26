@@ -100,7 +100,8 @@ with tab_benchmark:
 
 with tab_eva:
     st.markdown('# Evaluation Overview')
-    tab_acc, tab_time, tab_ms = st.tabs(["Accuracy Evaluation", "Runtime Analysis", "Model Selected Distribution"])
+    # tab_acc, tab_time, tab_ms = st.tabs(["Accuracy Evaluation", "Runtime Analysis", "Model Selected Distribution"])
+    tab_acc, tab_ms, tab_time = st.tabs(["Accuracy Evaluation", "Model Selected Distribution", "Runtime Analysis"])
     with tab_acc:
         st.markdown('#### Evaluation Metrics: {}'.format(metric_name))
         # eva_type_col = st.columns([1])
@@ -142,56 +143,6 @@ with tab_eva:
             st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
             st.markdown("<h3 style='text-align: center;'>Table 1: Performance Comparision</h3>", unsafe_allow_html=True)
             st.dataframe(df_toplot)
-
-    with tab_time:
-        st.markdown(runtime_intro)
-        det_time_df = pd.read_csv('data/runtime_table/detection_time.csv')
-        exe_time_df = pd.read_csv('data/runtime_table/execution_time.csv')
-        det_time, det_time_text, exe_time, exe_time_text, methods_det, methods_exe, acc_det, acc_exe = get_bubble_data(acc_df=df, det_time_df=det_time_df, exe_time_df=exe_time_df, methods_variant=Comparaed_Solution_Pool)
-
-        if len(Comparaed_Solution_Pool) <= 5:        
-            st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel")
-        else:    
-            fig = go.Figure(data=[go.Scatter(
-                x=methods_det,
-                y=acc_det,
-                text=det_time_text,
-                mode='markers',
-                marker=dict(
-                    opacity=.7,
-                    color='lightblue',
-                    line = dict(width=1, color = '#1f77b4'),
-                    size=det_time,
-                    sizemode='area',
-                    sizeref=2.*max(det_time)/(60.**2),
-                    sizemin=4))])
-            fig.update_xaxes(tickfont_size=14)
-            fig.update_yaxes(tickfont_size=14)
-            fig.update_layout(title=f'{metric_name} vs Detection Time (Fast -> Slow)',
-                            yaxis_title=f'{metric_name}',
-                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
-            st.plotly_chart(fig)
-
-            fig = go.Figure(data=[go.Scatter(
-                x=methods_exe,
-                y=acc_exe,
-                text=exe_time_text,
-                mode='markers',
-                marker=dict(
-                    opacity=.7,
-                    color='lightblue',
-                    line = dict(width=1, color = '#1f77b4'),
-                    size=det_time,
-                    sizemode='area',
-                    sizeref=2.*max(det_time)/(60.**2),
-                    sizemin=4))])
-            fig.update_xaxes(tickfont_size=14)
-            fig.update_yaxes(tickfont_size=14)
-            fig.update_layout(title=f'{metric_name} vs Execution Time (Fast -> Slow)',
-                            yaxis_title=f'{metric_name}',
-                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
-            st.plotly_chart(fig)
-
 
     with tab_ms:
         st.markdown('#### (1) Pretraining-based Model Selection')
@@ -246,7 +197,7 @@ with tab_eva:
                 plt.ylim(0, 1)
                 st.pyplot(plt)
 
-        st.markdown('### (2) Internal Evaluation')
+        st.markdown('#### (2) Internal Evaluation')
 
         ms_distribution_internal_col, _, _ = st.columns([1, 1, 1])
         with ms_distribution_internal_col:
@@ -266,6 +217,55 @@ with tab_eva:
                     keys_name.append(det_name_mapping[i])
                 fig = px.bar(x=keys_name, y=list(values), labels={'x':'Anomaly Detector', 'y':'Count'},title=method)
                 st.plotly_chart(fig)
+
+    with tab_time:
+        st.markdown(runtime_intro)
+        det_time_df = pd.read_csv('data/runtime_table/detection_time.csv')
+        exe_time_df = pd.read_csv('data/runtime_table/execution_time.csv')
+        det_time, det_time_text, exe_time, exe_time_text, methods_det, methods_exe, acc_det, acc_exe = get_bubble_data(acc_df=df, det_time_df=det_time_df, exe_time_df=exe_time_df, methods_variant=Comparaed_Solution_Pool)
+
+        if len(Comparaed_Solution_Pool) <= 5:        
+            st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel")
+        else:    
+            fig = go.Figure(data=[go.Scatter(
+                x=methods_det,
+                y=acc_det,
+                text=det_time_text,
+                mode='markers',
+                marker=dict(
+                    opacity=.7,
+                    color='lightblue',
+                    line = dict(width=1, color = '#1f77b4'),
+                    size=det_time,
+                    sizemode='area',
+                    sizeref=2.*max(det_time)/(60.**2),
+                    sizemin=4))])
+            fig.update_xaxes(tickfont_size=14)
+            fig.update_yaxes(tickfont_size=14)
+            fig.update_layout(title=f'{metric_name} vs Detection Time (Fast -> Slow)',
+                            yaxis_title=f'{metric_name}',
+                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
+            st.plotly_chart(fig)
+
+            fig = go.Figure(data=[go.Scatter(
+                x=methods_exe,
+                y=acc_exe,
+                text=exe_time_text,
+                mode='markers',
+                marker=dict(
+                    opacity=.7,
+                    color='lightblue',
+                    line = dict(width=1, color = '#1f77b4'),
+                    size=det_time,
+                    sizemode='area',
+                    sizeref=2.*max(det_time)/(60.**2),
+                    sizemin=4))])
+            fig.update_xaxes(tickfont_size=14)
+            fig.update_yaxes(tickfont_size=14)
+            fig.update_layout(title=f'{metric_name} vs Execution Time (Fast -> Slow)',
+                            yaxis_title=f'{metric_name}',
+                            showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
+            st.plotly_chart(fig)
 
 with tab_exploration:
 
