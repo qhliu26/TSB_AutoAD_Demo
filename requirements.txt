@@ -1,7 +1,7 @@
 pandas
 streamlit
 matplotlib
-numpy
+numpy==1.23.3
 seaborn
 plotly
 bidict
