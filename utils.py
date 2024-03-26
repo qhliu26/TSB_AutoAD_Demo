@@ -15,13 +15,13 @@ import pycatch22 as catch22
 from pathlib import Path
 from TSB_UAD.TSB_run_det import *
 
-def plot_box_plot(all_df, target_df, methods_variant, metric_name):
+def plot_box_plot(target_df, methods_variant, metric_name):
     if len(target_df.columns) > 0:
 
         eval_list = []
-        for index, row in all_df.iterrows():
+        for index, row in target_df.iterrows():
             for method in methods_variant:
-                eval_list.append([method, row['file'], row[method]])
+                eval_list.append([method, index, row[method]])
         eval_df = pd.DataFrame(eval_list, columns=['classifier_name', 'dataset_name', 'accuracy'])
         p_values, average_ranks, _ = Friedman_Nemenyi(df_perf=eval_df, alpha=0.05)
         order = average_ranks.keys().to_list()[::-1]

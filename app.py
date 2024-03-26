@@ -138,7 +138,7 @@ with tab_eva:
 
         else:
             df_toplot = df_toplot[Comparaed_Solution_Pool]
-            plot_box_plot(all_df=df, target_df=df_toplot, methods_variant=Comparaed_Solution_Pool, metric_name=metric_name)
+            plot_box_plot(target_df=df_toplot, methods_variant=Comparaed_Solution_Pool, metric_name=metric_name)
             st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
             st.markdown("<h3 style='text-align: center;'>Table 1: Performance Comparision</h3>", unsafe_allow_html=True)
             st.dataframe(df_toplot)
