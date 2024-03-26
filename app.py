@@ -149,7 +149,7 @@ with tab_eva:
         exe_time_df = pd.read_csv('data/runtime_table/execution_time.csv')
         det_time, det_time_text, exe_time, exe_time_text, methods_det, methods_exe, acc_det, acc_exe = get_bubble_data(acc_df=df, det_time_df=det_time_df, exe_time_df=exe_time_df, methods_variant=Comparaed_Solution_Pool)
 
-        if len(df_toplot.columns) <= 5:        
+        if len(Comparaed_Solution_Pool) <= 5:        
             st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel")
         else:    
             fig = go.Figure(data=[go.Scatter(
