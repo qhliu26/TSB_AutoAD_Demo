@@ -39,7 +39,6 @@ all_solution = ['EM', 'MV', 'CQ (XB)', 'CQ (Silhouette)', 'CQ (Hubert)', 'CQ (ST
             'Aug (Orig)', 'Aug (Ens)', 'Aug (Majority Voting)', 'Clean (Majority)', 'Clean (Individual)', 'Clean (Ratio)', 'Clean (Avg)', 'Booster']
 
 description_intro = f"""
-#### 1. Abstract
 
 Despite the recent focus on time-series anomaly detection, the effectiveness of the proposed anomaly detectors is restricted to specific domains. It is worth noting that a model that performs well on one dataset may not perform well on another. Therefore, how to select the optimal model for a particular dataset has emerged as a pressing issue. 
 However, there is a noticeable gap in the existing literature when it comes to providing a comprehensive review of the ongoing efforts in this field. The evaluation of proposed methods across different datasets and under varying assumptions may create an illusion of progress. 
@@ -48,13 +47,13 @@ Our goal for the interactive AutoTSAD Engine is to help users gain insights into
 
 Github repo: https://github.com/TheDatumOrg/AutoTSAD
 
-#### 2. Contributors
+#### Contributors
 
 * [Qinghua Liu](https://qhliu26.github.io) (The Ohio State University)
 * [Seunghak Lee](https://www.cs.cmu.edu/~seunghak) (Meta)
 * [John Paparrizos](https://www.paparrizos.org) (The Ohio State University)
 
-#### 3. User Manual
+#### User Manual
 
 """
 

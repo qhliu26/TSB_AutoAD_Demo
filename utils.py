@@ -13,6 +13,7 @@ from collections import Counter
 import pickle
 import pycatch22 as catch22
 from pathlib import Path
+from TSB_UAD.TSB_run_det import *
 
 def plot_box_plot(all_df, target_df, methods_variant, metric_name):
     if len(target_df.columns) > 0:
@@ -467,3 +468,16 @@ def run_model(ts_data, method_selected_exp):
     else:
         return Candidate_Model_Set, success, success
     
+
+def gen_as_from_det(data, det):
+    det_name = det.split('_')[0]
+    det_hp = det.split('_')[1:]
+    if det_name == 'IForest':
+        score = run_iforest_dev(data, periodicity=int(det_hp[0]), n_estimators=int(det_hp[1]))
+    elif det_name == 'PCA':
+        det_hp[1]=None if det_hp[1] == 'None' else float(det_hp[1])
+        score = run_pca_dev(data, periodicity=int(det_hp[0]), n_components=det_hp[1])
+    else:
+        st.markdown(f"#### Not yet supported in this webpage... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
+        score = None
+    return score

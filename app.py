@@ -307,16 +307,17 @@ with tab_exploration:
         fig = go.Figure()
         fig.add_trace(go.Scattergl(
             x=list(range(len(ts_data))), y=ts_data,
-            xaxis='x', yaxis='y2', name = "Time series", mode = 'lines',
+            name = "Time series", mode = 'lines',
             line = dict(color = 'blue', width=3), opacity = 1))
         fig.add_trace(go.Scattergl(
             x=list(range(len(ts_data))), y=anom,
-            xaxis='x', yaxis='y2', name = "Anomalies",
+            name = "Anomalies",
             mode = 'lines', line = dict(color = 'red', width=3), opacity = 1))
         if dataset_exp == 'Upload your own':
             fig.update_layout(title='User uploaded time series')
         else:
             fig.update_layout(title='File name: '+time_series_selected_exp)
+        fig.update_layout(margin=dict(b=0), height=300)
         st.plotly_chart(fig, use_container_width=True)
 
         if gen_result:
@@ -329,8 +330,38 @@ with tab_exploration:
             else:
                 pred_detector, success, vote_summary = run_model(ts_data, method_selected_exp)
                 if success:
-                    st.markdown(f"#### :star: Selected Model: {pred_detector}")
-                    st.markdown(f"#### Voting details:")
-                    st.bar_chart(vote_summary)
+                    st.markdown(f"###### Voting details:")
+                    st.bar_chart(vote_summary, height=150)
+                    st.markdown(f"##### :star: Selected Model: {pred_detector}")
+
+                    model_to_use = det_name_mapping.inverse[pred_detector]
+                    Anomaly_score = gen_as_from_det(ts_data.reshape(-1, 1), model_to_use)
+                    if Anomaly_score is not None:
+
+                        mean_score = np.mean(Anomaly_score)
+                        std_dev = np.std(Anomaly_score)
+                        threshold = mean_score + 3 * std_dev
+                        pred_label = Anomaly_score > threshold
+                        pred_anom = add_rect(pred_label, Anomaly_score)
+                        # exceed_indices = np.where(Anomaly_score > threshold)[0]
+
+                        fig = go.Figure()
+                        fig.add_trace(go.Scattergl(
+                            x=list(range(len(Anomaly_score))), y=Anomaly_score,
+                            name = "Anomaly Score", mode = 'lines',
+                            line = dict(color = 'lightblue', width=3), opacity = 1))
+
+                        fig.add_hline(y=threshold, line=dict(color="red", width=2, dash="dash"), name="Threshold")
+
+                        fig.add_trace(go.Scattergl(
+                            x=list(range(len(Anomaly_score))), y=pred_anom,
+                            name = "Predicted Anomalies",
+                            mode = 'lines', line = dict(color = 'red', width=3), opacity = 1))
+
+                        # for idx in exceed_indices:
+                        #     fig.add_vrect(x0=idx-0.5, x1=idx+0.5, fillcolor="red", opacity=0.5, line_width=0)
+                        fig.update_layout(title='Anomaly Score', height=300)
+
+                        st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.markdown(f"#### Failed at generating results... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
