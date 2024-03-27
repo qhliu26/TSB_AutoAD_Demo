@@ -45,15 +45,32 @@ However, there is a noticeable gap in the existing literature when it comes to p
 Motivated by the limitations above, we introduce the AutoTSAD Engine, a modular web interface designed to facilitate the exploration of the first comprehensive benchmark for automated time-series anomaly detection. AutoTSAD Engine enables rigorous statistical analysis of 18 automated solutions across 18 public datasets, incorporating a two-dimensional evaluation that includes both (i) accuracy and (ii) runtime analysis. And it allows users to assess the performance of various methods both (i) globally, by providing aggregated evaluation across datasets, and (ii) individually, offering fine-grained analysis per time series. Furthermore, the engine accommodates the processing of user-uploaded data, enabling users to experiment with different model selection strategies on their own datasets. 
 Our goal for the interactive AutoTSAD Engine is to help users gain insights into different methods and to facilitate a more intuitive comprehension of the performance disparities among these methods.
 
-Github repo: https://github.com/TheDatumOrg/AutoTSAD
+* Github repo: https://github.com/TheDatumOrg/AutoTSAD
+
+"""
+
+User_Manual = f"""
+
+(a) Finding the overall best automated solutions
+
+(b) Investigating the influence of different anomaly types
+
+(c) Understanding accuracy to runtime trade-off
+
+(d) Exploring the model selected distribution and the effect of domain shift
+
+(e) Testing on your own data (Be sure to follow the format of TSB-UAD Benchmark)
+
+"""
+
+
+Contributors = f"""
 
 #### Contributors
 
 * [Qinghua Liu](https://qhliu26.github.io) (The Ohio State University)
 * [Seunghak Lee](https://www.cs.cmu.edu/~seunghak) (Meta)
 * [John Paparrizos](https://www.paparrizos.org) (The Ohio State University)
-
-#### User Manual
 
 """
 

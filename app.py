@@ -51,7 +51,14 @@ tab_desc, tab_benchmark, tab_eva, tab_exploration = st.tabs(["Overview", "Benchm
 with tab_desc:
     st.markdown("## :surfer: Dive into AutoTSAD")
     st.markdown("##### Automated Solutions for Time-Series Anomaly Detection")
+    image = Image.open('figures/demo_sys.png')
+    st.image(image)
     st.markdown(description_intro)
+    st.markdown("#### User Manual")
+    image = Image.open('figures/autotsad_engine.png')
+    st.image(image, caption='The main frames of AutoTSAD Engine')
+    st.markdown(User_Manual)
+    st.markdown(Contributors)
 
 
 with tab_benchmark:
