@@ -66,39 +66,42 @@ with tab_benchmark:
     image = Image.open('figures/AutoTSAD.png')
     st.image(image, caption='Overview of AutoTSAD benchmark')
     st.markdown('#### 2. Taxonomy of Automated Solutions for Time Series')
+    image = Image.open('figures/taxonomy_year.png')
+    st.image(image)
+
+    # # labels = [
+    # #     "AutoTSAD", 
+    # #     "Model Selection", "Model Generation",
+    # #     "Internal Evaluation", "Pretraining Based", "Ensembling Based", "Pseudo-label Based",
+    # #     "EM&MV (2016)", "CQ (2016)", "MC (2022)", "Synthetic (2022)", "RA (2022)", "CLF (2020)", "RG (2008)", 
+    # #     "UReg (2023)", "CFact (2023)", "kNN (2013)", "MetaOD (2021)", "ISAC (2010)",
+    # #     "OE (2015)", "UE (2014)", "HITS (2023)", "Aug (2022)", "Clean (2023)", "Booster (2023)"
+    # # ]
     # labels = [
     #     "AutoTSAD", 
     #     "Model Selection", "Model Generation",
     #     "Internal Evaluation", "Pretraining Based", "Ensembling Based", "Pseudo-label Based",
-    #     "EM&MV (2016)", "CQ (2016)", "MC (2022)", "Synthetic (2022)", "RA (2022)", "CLF (2020)", "RG (2008)", 
-    #     "UReg (2023)", "CFact (2023)", "kNN (2013)", "MetaOD (2021)", "ISAC (2010)",
-    #     "OE (2015)", "UE (2014)", "HITS (2023)", "Aug (2022)", "Clean (2023)", "Booster (2023)"
+    #     "EM&MV", "CQ", "MC", "Synthetic", "RA", "CLF", "RG", "UReg", "CFact", "kNN", "MetaOD", "ISAC",
+    #     "OE", "UE", "HITS", "Aug", "Clean", "Booster"
+    # ]    
+    # parents = [
+    #     "", 
+    #     "AutoTSAD", "AutoTSAD",
+    #     "Model Selection", "Model Selection", "Model Generation", "Model Generation",
+    #     "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation",
+    #     "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based",
+    #     "Ensembling Based",  "Ensembling Based",  "Ensembling Based", "Pseudo-label Based", "Pseudo-label Based", "Pseudo-label Based"
     # ]
-    labels = [
-        "AutoTSAD", 
-        "Model Selection", "Model Generation",
-        "Internal Evaluation", "Pretraining Based", "Ensembling Based", "Pseudo-label Based",
-        "EM&MV", "CQ", "MC", "Synthetic", "RA", "CLF", "RG", "UReg", "CFact", "kNN", "MetaOD", "ISAC",
-        "OE", "UE", "HITS", "Aug", "Clean", "Booster"
-    ]    
-    parents = [
-        "", 
-        "AutoTSAD", "AutoTSAD",
-        "Model Selection", "Model Selection", "Model Generation", "Model Generation",
-        "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation",
-        "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based",
-        "Ensembling Based",  "Ensembling Based",  "Ensembling Based", "Pseudo-label Based", "Pseudo-label Based", "Pseudo-label Based"
-    ]
 
-    fig = go.Figure(go.Treemap(
-        labels=labels,
-        parents=parents,
-        textfont=dict(size=18)
-    ))
+    # fig = go.Figure(go.Treemap(
+    #     labels=labels,
+    #     parents=parents,
+    #     textfont=dict(size=18)
+    # ))
 
-    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
-        # treemapcolorway=["#3cb371", "#ffd700", "#3cb371", "#ffd700"])
-    st.plotly_chart(fig)
+    # fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
+    #     # treemapcolorway=["#3cb371", "#ffd700", "#3cb371", "#ffd700"])
+    # st.plotly_chart(fig)
 
     st.markdown(description_dataset)
     st.markdown(description_candidate)
@@ -140,15 +143,18 @@ with tab_eva:
                 df_toplot = pd.concat([df_toplot, df_filtered[df_filtered['seq_anomaly'] == 1]], ignore_index=True)
             df_toplot = df_toplot.drop_duplicates()
 
-        if len(df_toplot.columns) <= 5:        
-            st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel AND types of anomaly in the above :point_up_2:")
-
+        if len(datasets) == 0:
+            st.markdown("#### :heavy_exclamation_mark: Note: Please select datasets in the left :point_left: panel")
         else:
-            df_toplot = df_toplot[Comparaed_Solution_Pool]
-            plot_box_plot(target_df=df_toplot, methods_variant=Comparaed_Solution_Pool, metric_name=metric_name)
-            st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
-            st.markdown("<h3 style='text-align: center;'>Table 1: Performance Comparision</h3>", unsafe_allow_html=True)
-            st.dataframe(df_toplot)
+            if len(df_toplot.columns) <= 5:        
+                st.markdown("#### :heavy_exclamation_mark: Note: Please select automated solutions in the left :point_left: panel AND types of anomaly in the above :point_up_2:")
+
+            else:
+                df_toplot = df_toplot[Comparaed_Solution_Pool]
+                plot_box_plot(target_df=df_toplot, methods_variant=Comparaed_Solution_Pool, metric_name=metric_name)
+                st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: center;'>Table 1: Performance Comparision</h3>", unsafe_allow_html=True)
+                st.dataframe(df_toplot)
 
     with tab_time:
         st.markdown(runtime_intro)
@@ -201,15 +207,18 @@ with tab_eva:
 
 
     with tab_ms:
-        st.markdown('#### (1) Pretraining-based Model Selection')
-        st.markdown('##### In-distribution vs Out-of-distriution')
+        st.markdown('#### (1) Pretraining-based Model Selection (ID vs OOD)')
+        # st.markdown('##### In-distribution vs Out-of-distriution')
+        st.markdown('* In-distribution (ID): The model selector is trained on all datasets.')
+        st.markdown('* Out-of-distriution (OOD): The model selector is trained on all but one datasets.')
 
         ms_distribution_pretraining_col, _, _ = st.columns([1, 1, 1])
         with ms_distribution_pretraining_col:
             container_ms_distribution_pretraining = st.container()
             ms_distribution_pretraining = container_ms_distribution_pretraining.multiselect('Pretrained Model Selector', methods_pretrain_id, key='ms_distribution_pretraining')
-        if len(ms_distribution_pretraining) >= 0:
+        if len(ms_distribution_pretraining) > 0:
             for method in ms_distribution_pretraining:
+                st.markdown("##### :point_down: Overview of model selected distribution. `Count` indicates the frequency of each anomaly detector being chosen.")
                 for case in [' (ID)', ' (OOD)']:
                     method_case = str(method)+case
                     globals()[method_case+'_dict'] = {det: 0 for det in Candidate_Model_Set}
@@ -225,6 +234,9 @@ with tab_eva:
                     fig = px.bar(x=keys_name, y=list(values), labels={'x':'Anomaly Detector', 'y':'Count'},title=method_case)
                     fig.update_layout(height=300)
                     st.plotly_chart(fig)
+
+                st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
+                st.markdown(f"##### :point_down: Pairwise Comparison of {method} (ID) and {method} (OOD) in terms of {metric_name}.")
 
                 fig = plt.figure(figsize=(6, 6))
                 x = df[str(method)+' (ID)']
@@ -244,7 +256,7 @@ with tab_eva:
                 # Label the axes
                 plt.xlabel('ID', fontsize=12)
                 plt.ylabel('OOD', fontsize=12)
-                plt.title('Pairwise Comparison: '+method, fontsize=14)
+                # plt.title('Pairwise Comparison: '+method, fontsize=14)
                 plt.xticks(fontsize=10)
                 plt.yticks(fontsize=10)
 
@@ -259,7 +271,8 @@ with tab_eva:
         with ms_distribution_internal_col:
             container_ms_distribution_internal = st.container()
             ms_distribution_internal = container_ms_distribution_internal.multiselect('Internal Evaluation', methods_ie, key='ms_distribution_internal')
-        if len(ms_distribution_internal) >= 0:
+        if len(ms_distribution_internal) > 0:
+            st.markdown("##### :point_down: Overview of model selected distribution. `Count` indicates the frequency of each anomaly detector being chosen.")
             for method in ms_distribution_internal:
                 globals()[method+'_dict'] = {det: 0 for det in Candidate_Model_Set}
                 for index, row in df.iterrows():
@@ -330,10 +343,15 @@ with tab_exploration:
         if gen_result:
             if not dataset_exp == 'Upload your own':
                 st.markdown(f"* {metric_name} of {method_selected_exp} = {df.loc[time_series_selected_exp][method_selected_exp]}")
-                st.markdown("* Evaluation details:")
-                method_display = Comparaed_Solution_Pool
-                method_display.append(method_selected_exp)
-                st.dataframe(df.loc[time_series_selected_exp, method_display])
+                method_display = set(Comparaed_Solution_Pool)
+                method_display.add(method_selected_exp)
+                df_display = df.loc[time_series_selected_exp, list(method_display)]
+                sorted_df_display = df_display.to_frame().sort_values(by=time_series_selected_exp, ascending=False)
+                st.markdown(f'* Ranking of {method_selected_exp} is: {sorted_df_display.index.tolist().index(method_selected_exp)}')
+
+                st.markdown("* Ranked Evaluation details (Best -> Worst):")
+                st.dataframe(sorted_df_display)
+
             else:
                 pred_detector, success, vote_summary = run_model(ts_data, method_selected_exp)
                 if success:
