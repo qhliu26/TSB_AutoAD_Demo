@@ -236,9 +236,9 @@ with tab_eva:
                     st.plotly_chart(fig)
 
                 st.markdown('<hr style="border:2px solid gray">', unsafe_allow_html=True)
-                st.markdown(f"##### :point_down: Pairwise Comparison of {method} (ID) and {method} (OOD) in terms of {metric_name}.")
+                # st.markdown(f"##### :point_down: Pairwise Comparison of {method} (ID) and {method} (OOD) in terms of {metric_name}.")
 
-                fig = plt.figure(figsize=(6, 6))
+                fig_pair = plt.figure(figsize=(6, 6))
                 x = df[str(method)+' (ID)']
                 y = df[str(method)+' (OOD)']
 
@@ -256,14 +256,34 @@ with tab_eva:
                 # Label the axes
                 plt.xlabel('ID', fontsize=12)
                 plt.ylabel('OOD', fontsize=12)
-                # plt.title('Pairwise Comparison: '+method, fontsize=14)
+                plt.title(f'Pairwise Comparison of {method} in {metric_name}', fontsize=14)
                 plt.xticks(fontsize=10)
                 plt.yticks(fontsize=10)
 
                 # Set the limits of the axes
                 plt.xlim(0, 1)
                 plt.ylim(0, 1)
-                st.pyplot(plt)
+
+                fig2, ax2 = plt.subplots()
+                ax2.plot(np.random.randn(50))
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.pyplot(fig_pair)
+
+                with col2:
+                    fig_avg = px.bar(x=['ID', 'OOD'], y=[df[str(method)+' (ID)'].mean(), df[str(method)+' (OOD)'].mean()], 
+                                color=['ID', 'OOD'],
+                                color_discrete_map={"ID": "blue", "OOD": "lightblue"})
+                    fig_avg.update_layout(margin=dict(b=0), height=300, width=250, xaxis_title="", yaxis_title=metric_name, showlegend=False,     
+                    title={
+                        'text': f'Average {metric_name} of {method}',         
+                        'y':0.9,
+                        'x':0.5,
+                        'xanchor': 'center',
+                        'yanchor': 'top'})
+                    st.plotly_chart(fig_avg)
+
 
         st.markdown('#### (2) Internal Evaluation')
 
