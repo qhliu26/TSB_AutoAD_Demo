@@ -180,7 +180,7 @@ with tab_eva:
                     sizemin=4))])
             fig.update_xaxes(tickfont_size=14)
             fig.update_yaxes(tickfont_size=14)
-            fig.update_layout(title=f'{metric_name} vs Detection Time (Fast -> Slow)',
+            fig.update_layout(title=f'{metric_name} vs. Detection Time (Fast -> Slow)',
                             yaxis_title=f'{metric_name}',
                             showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
             st.plotly_chart(fig)
@@ -200,15 +200,15 @@ with tab_eva:
                     sizemin=4))])
             fig.update_xaxes(tickfont_size=14)
             fig.update_yaxes(tickfont_size=14)
-            fig.update_layout(title=f'{metric_name} vs Execution Time (Fast -> Slow)',
+            fig.update_layout(title=f'{metric_name} vs. Execution Time (Fast -> Slow)',
                             yaxis_title=f'{metric_name}',
                             showlegend=False, height=350, template="plotly_white", font=dict(size=19, color="black"))
             st.plotly_chart(fig)
 
 
     with tab_ms:
-        st.markdown('#### (1) Pretraining-based Model Selection (ID vs OOD)')
-        # st.markdown('##### In-distribution vs Out-of-distriution')
+        st.markdown('#### (1) Pretraining-based Model Selection (ID vs. OOD)')
+        # st.markdown('##### In-distribution vs. Out-of-distriution')
         st.markdown('* In-distribution (ID): The model selector is trained on all datasets.')
         st.markdown('* Out-of-distriution (OOD): The model selector is trained on all but one datasets.')
 
