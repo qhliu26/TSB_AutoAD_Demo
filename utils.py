@@ -6,14 +6,14 @@ import matplotlib.pyplot as plt
 import math
 from scipy.stats import friedmanchisquare
 from scikit_posthocs import posthoc_nemenyi_friedman
+from sklearn.preprocessing import StandardScaler
 import networkx
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import seaborn as sns
 from collections import Counter
 import pickle
-import pycatch22 as catch22
 from pathlib import Path
-from TSB_UAD.TSB_run_det import *
+from pycatch22 import catch22_all
 
 def plot_box_plot(target_df, methods_variant, metric_name):
     if len(target_df.columns) > 0:
@@ -311,7 +311,7 @@ def graph_ranks(avranks, names, p_values, cd=None, cdmethod=None, lowv=None, hig
               (rankpos(ssums[i]), chei),
               (textspace - 0.1, chei)],
              linewidth=linewidth)
-        if nnames[i] in ['Oracle', 'GB', 'SS', 'Random (TS)', 'Random (D)']:
+        if nnames[i] in ['Oracle', 'GB', 'SS', 'Random', 'FM']:
             color = 'b'
         else:
             color = 'k'
@@ -407,77 +407,84 @@ def split_ts(data, window_size):
 
     return data_split
 
-def run_model(ts_data, method_selected_exp):
+def extract_catch22_features(data):
+    if data.shape[1] == 1:  # Univariate case
+        features = np.array([catch22_all(data[:, 0])['values']])  # Shape (1,22)
+    else:  # Multivariate case
+        features = np.array([catch22_all(data[:, i])['values'] for i in range(data.shape[1])])  # Shape (channels, 22)
+        summary_features = np.vstack([
+            np.min(features, axis=0),
+            np.percentile(features, 25, axis=0),
+            np.mean(features, axis=0),
+            np.percentile(features, 75, axis=0),
+            np.max(features, axis=0)
+        ])  # Shape (5, 22)
+        features = summary_features.flatten().reshape(1, -1)  # Shape (1, 110)
     
-    if method_selected_exp == 'UReg':
-        ts_win = split_ts(ts_data, window_size=1024)
-        meta_mat = np.zeros([ts_win.shape[0], 24])
-        for i in range(ts_win.shape[0]):
-            catch24_output = catch22.catch22_all(list(ts_win[i].ravel()), catch24=True)
-            meta_mat[i, :] = catch24_output['values']
-        meta_mat = pd.DataFrame(meta_mat)
-        meta_mat = meta_mat.replace([np.nan, np.inf, -np.inf], 0)
-        result_path = f'data/model/UReg.pkl'
-        with open(result_path, 'rb') as file:
-            result = pickle.load(file)
+    # Replace NaN values with 0
+    features = np.nan_to_num(features)
+    return features
 
-        U_pred = np.column_stack([rf.predict(meta_mat) for rf in result['models']])
-        prediction_scores = U_pred.dot(result['DVt'])
-        preds = np.argmax(prediction_scores, axis=1)
-        counter = Counter(preds)
-        most_voted = counter.most_common(1)
-        det = Candidate_Model_Set[int(most_voted[0][0])]
-        success = True
+def run_model(ts_data, method_selected_exp):
 
-        counter = dict(counter)
-        vote_summary = {det_name_mapping[detector]:0 for detector in Candidate_Model_Set}
-        for key in counter:
-            key = int(key)
-            vote_summary[det_name_mapping[Candidate_Model_Set[key]]] = counter[key]
+    data = StandardScaler().fit_transform(ts_data)
+    data_split = split_ts(data, window_size=1024)
+    meta_features = np.vstack([extract_catch22_features(window) for window in data_split])
+    meta_mat = pd.DataFrame(meta_features)
+    meta_mat = meta_mat.replace([np.nan, np.inf, -np.inf], 0)
 
-    elif method_selected_exp == 'CLF':
-        ts_win = split_ts(ts_data, window_size=1024)
-        meta_mat = np.zeros([ts_win.shape[0], 24])
-        for i in range(ts_win.shape[0]):
-            catch24_output = catch22.catch22_all(list(ts_win[i].ravel()), catch24=True)
-            meta_mat[i, :] = catch24_output['values']
-        meta_mat = pd.DataFrame(meta_mat)
-        meta_mat = meta_mat.replace([np.nan, np.inf, -np.inf], 0)
-        model_path = 'data/model/CLF.pkl'        
+    if method_selected_exp == 'MSAD':
+
+        model_path = 'data/model/MSAD.pkl'        
         filename = Path(model_path)
         with open(f'{filename}', 'rb') as input:
             model = pickle.load(input)
         preds = model.predict(meta_mat)
+
         counter = Counter(preds)
+        det = counter.most_common(1)[0][0]
+        success = True
+
+        counter = dict(counter)
+        vote_summary = {detector:0 for detector in Candidate_Model_Set}
+        for key in counter:
+            vote_summary[key] = counter[key]
+        
+    elif method_selected_exp == 'SATzilla':
+        model_path = 'data/model/SATzilla.pkl'        
+        filename = Path(model_path)
+        with open(f'{filename}', 'rb') as input:
+            model = pickle.load(input)
+        preds = model.predict(meta_mat)
+        
+        counter = Counter(np.argmax(preds, axis=1))
         most_voted = counter.most_common(1)
         det = Candidate_Model_Set[int(most_voted[0][0])]
         success = True
 
         counter = dict(counter)
-        vote_summary = {det_name_mapping[detector]:0 for detector in Candidate_Model_Set}
+        vote_summary = {detector:0 for detector in Candidate_Model_Set}
         for key in counter:
             key = int(key)
-            vote_summary[det_name_mapping[Candidate_Model_Set[key]]] = counter[key]
+            vote_summary[Candidate_Model_Set[key]] = counter[key]
 
     else:
-        st.markdown("Method not supported yet... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
+        st.markdown("Method not supported yet... Please visit our Github repo for more information (https://github.com/TheDatumOrg/TSB-AutoAD)")
         success = False
     
     if success:
-        return det_name_mapping[det], success, vote_summary
+        return det, success, vote_summary
     else:
         return Candidate_Model_Set, success, success
     
 
 def gen_as_from_det(data, det):
-    det_name = det.split('_')[0]
-    det_hp = det.split('_')[1:]
-    if det_name == 'IForest':
-        score = run_iforest_dev(data, periodicity=int(det_hp[0]), n_estimators=int(det_hp[1]))
-    elif det_name == 'PCA':
-        det_hp[1]=None if det_hp[1] == 'None' else float(det_hp[1])
-        score = run_pca_dev(data, periodicity=int(det_hp[0]), n_components=det_hp[1])
-    else:
+
+    from TSB_AD.model_wrapper import run_Unsupervise_AD
+
+    try:
+        score = run_Unsupervise_AD(det, data)
+    except:
         st.markdown(f"#### Not yet supported in this webpage... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
         score = None
     return score

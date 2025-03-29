@@ -6,15 +6,15 @@ import plotly.express as px
 from constant import *
 from utils import *
 #plt.style.use('dark_background')
-st.set_page_config(page_title="AutoTSAD")
+st.set_page_config(page_title="EasyAD")
 
 df = pd.read_csv('data/accuracy_table/{}.csv'.format('VUS-PR'))
-df['filename'] = df['file'].str.split('/').str[1]
-df['dataset'] = df['file'].str.split('/').str[0]
+df['filename'] = df['file']
+df['dataset'] = df['file'].str.split('_').str[1]
 df = df.set_index('filename')
 
 with st.sidebar:
-    st.markdown('# AutoTSAD Engine') 
+    st.markdown('# EasyAD Engine') 
     st.markdown('## Please Select :point_down:') 
     metric_name = st.selectbox('Evaluation Metric', list_measures)
     # metric_name = metric_name.split('-')[0]+'_'+metric_name.split('-')[1]
@@ -26,8 +26,8 @@ with st.sidebar:
     
     container_category = st.container()
     all_catagory = st.checkbox("Select all", key='all_catagory')
-    if all_catagory: methods_family = container_category.multiselect('Select AutoTSAD Category', list(method_group.keys()), list(method_group.keys()), key='selector_catagory_all')
-    else: methods_family = container_category.multiselect('Select AutoTSAD Category', list(method_group.keys()), key='selector_catagory')
+    if all_catagory: methods_family = container_category.multiselect('Select EasyAD Category', list(method_group.keys()), list(method_group.keys()), key='selector_catagory_all')
+    else: methods_family = container_category.multiselect('Select EasyAD Category', list(method_group.keys()), key='selector_catagory')
 
     container_method = st.container()
     best_method = st.checkbox("Best Variant", key='best_method')
@@ -42,35 +42,35 @@ with st.sidebar:
     else: methods_variant = container_method.multiselect('Select Automated Solutions', all_method_list, key='selector_methods')
 
 df = pd.read_csv('data/accuracy_table/{}.csv'.format(metric_name))
-df['filename'] = df['file'].str.split('/').str[1]
-df['dataset'] = df['file'].str.split('/').str[0]
+df['filename'] = df['file']
+df['dataset'] = df['file'].str.split('_').str[1]
 df = df.set_index('filename')
 
 tab_desc, tab_benchmark, tab_eva, tab_exploration = st.tabs(["Overview", "Benchmark", "Evaluation", "Data Exploration"]) 
 
 with tab_desc:
-    st.markdown("## :surfer: Dive into AutoTSAD")
+    st.markdown("## :surfer: Dive into EasyAD")
     st.markdown("##### Automated Solutions for Time-Series Anomaly Detection")
     image = Image.open('figures/demo_sys.png')
     st.image(image)
     st.markdown(description_intro)
     st.markdown("#### User Manual")
-    image = Image.open('figures/autotsad_engine.png')
-    st.image(image, caption='The main frames of AutoTSAD Engine')
+    image = Image.open('figures/EasyAD_engine.png')
+    st.image(image, caption='The main frames of EasyAD Engine')
     st.markdown(User_Manual)
     st.markdown(Contributors)
 
 
 with tab_benchmark:
     st.markdown(benchmark_overview)
-    image = Image.open('figures/AutoTSAD.png')
-    st.image(image, caption='Overview of AutoTSAD benchmark')
-    st.markdown('#### 2. Taxonomy of Automated Solutions for Time Series')
-    image = Image.open('figures/taxonomy_year.png')
+    image = Image.open('figures/framework.png')
+    st.image(image, caption='Overview of TSB-AutoAD benchmark')
+    st.markdown('#### 2. Taxonomy of Automated Solutions for TSAD')
+    image = Image.open('figures/taxonomy_chronicle.png')
     st.image(image)
 
     # # labels = [
-    # #     "AutoTSAD", 
+    # #     "EasyAD", 
     # #     "Model Selection", "Model Generation",
     # #     "Internal Evaluation", "Pretraining Based", "Ensembling Based", "Pseudo-label Based",
     # #     "EM&MV (2016)", "CQ (2016)", "MC (2022)", "Synthetic (2022)", "RA (2022)", "CLF (2020)", "RG (2008)", 
@@ -78,7 +78,7 @@ with tab_benchmark:
     # #     "OE (2015)", "UE (2014)", "HITS (2023)", "Aug (2022)", "Clean (2023)", "Booster (2023)"
     # # ]
     # labels = [
-    #     "AutoTSAD", 
+    #     "EasyAD", 
     #     "Model Selection", "Model Generation",
     #     "Internal Evaluation", "Pretraining Based", "Ensembling Based", "Pseudo-label Based",
     #     "EM&MV", "CQ", "MC", "Synthetic", "RA", "CLF", "RG", "UReg", "CFact", "kNN", "MetaOD", "ISAC",
@@ -86,7 +86,7 @@ with tab_benchmark:
     # ]    
     # parents = [
     #     "", 
-    #     "AutoTSAD", "AutoTSAD",
+    #     "EasyAD", "EasyAD",
     #     "Model Selection", "Model Selection", "Model Generation", "Model Generation",
     #     "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation", "Internal Evaluation",
     #     "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based", "Pretraining Based",
@@ -103,7 +103,7 @@ with tab_benchmark:
     #     # treemapcolorway=["#3cb371", "#ffd700", "#3cb371", "#ffd700"])
     # st.plotly_chart(fig)
 
-    st.markdown(description_dataset)
+    # st.markdown(description_dataset)
     st.markdown(description_candidate)
 
 
@@ -207,22 +207,27 @@ with tab_eva:
 
 
     with tab_ms:
-        st.markdown('#### (1) Pretraining-based Model Selection (ID vs. OOD)')
+        st.markdown('#### (1) Meta-learning-based Model Selection (ID vs. OOD)')
         # st.markdown('##### In-distribution vs. Out-of-distriution')
         st.markdown('* In-distribution (ID): The model selector is trained on all datasets.')
         st.markdown('* Out-of-distriution (OOD): The model selector is trained on all but one datasets.')
 
+        df_AUC = pd.read_csv('data/accuracy_table/{}.csv'.format('AUC-PR'))
+        df_AUC['filename'] = df_AUC['file']
+        df_AUC['dataset'] = df_AUC['file'].str.split('_').str[1]
+        df_AUC = df_AUC.set_index('filename')
+
         ms_distribution_pretraining_col, _, _ = st.columns([1, 1, 1])
         with ms_distribution_pretraining_col:
             container_ms_distribution_pretraining = st.container()
-            ms_distribution_pretraining = container_ms_distribution_pretraining.multiselect('Pretrained Model Selector', methods_pretrain_id, key='ms_distribution_pretraining')
+            ms_distribution_pretraining = container_ms_distribution_pretraining.multiselect('Pretrained Model Selector', methods_meta_id, key='ms_distribution_pretraining')
         if len(ms_distribution_pretraining) > 0:
             for method in ms_distribution_pretraining:
                 st.markdown("##### :point_down: Overview of model selected distribution. `Count` indicates the frequency of each anomaly detector being chosen.")
                 for case in [' (ID)', ' (OOD)']:
                     method_case = str(method)+case
                     globals()[method_case+'_dict'] = {det: 0 for det in Candidate_Model_Set}
-                    for index, row in df.iterrows():
+                    for index, row in df_AUC.iterrows():
                         matching_columns = [col_name for col_name, col_value in row.items() if col_value == row[method_case]]
                         matching_elements = [element for element in matching_columns if element in Candidate_Model_Set]
                         globals()[method_case+'_dict'][matching_elements[0]] += 1
@@ -230,7 +235,7 @@ with tab_eva:
                     keys, values = zip(*top_k)
                     keys_name = []
                     for i in keys:
-                        keys_name.append(det_name_mapping[i])
+                        keys_name.append(i)
                     fig = px.bar(x=keys_name, y=list(values), labels={'x':'Anomaly Detector', 'y':'Count'},title=method_case)
                     fig.update_layout(height=300)
                     st.plotly_chart(fig)
@@ -295,7 +300,7 @@ with tab_eva:
             st.markdown("##### :point_down: Overview of model selected distribution. `Count` indicates the frequency of each anomaly detector being chosen.")
             for method in ms_distribution_internal:
                 globals()[method+'_dict'] = {det: 0 for det in Candidate_Model_Set}
-                for index, row in df.iterrows():
+                for index, row in df_AUC.iterrows():
                     matching_columns = [col_name for col_name, col_value in row.items() if col_value == row[method]]
                     matching_elements = [element for element in matching_columns if element in Candidate_Model_Set]
                     globals()[method+'_dict'][matching_elements[0]] += 1
@@ -303,7 +308,7 @@ with tab_eva:
                 keys, values = zip(*top_k)
                 keys_name = []
                 for i in keys:
-                    keys_name.append(det_name_mapping[i])
+                    keys_name.append(i)
                 fig = px.bar(x=keys_name, y=list(values), labels={'x':'Anomaly Detector', 'y':'Count'},title=method)
                 st.plotly_chart(fig)
 
@@ -324,24 +329,26 @@ with tab_exploration:
 
     if method_selected_exp in methods_ie:
         st.markdown("You are using the Internal Evaluation Model Selection Method: {}".format(method_selected_exp))
-    elif method_selected_exp in methods_pretrain: 
-        st.markdown("You are using the Pretraining-based Model Selection Method: {}".format(method_selected_exp))
+    elif method_selected_exp in methods_meta: 
+        st.markdown("You are using the Meta-learning-based Model Selection Method: {}".format(method_selected_exp))
     elif method_selected_exp in methods_ens: 
-        st.markdown("You are using the Ensembling-based Model Generation Method: {}".format(method_selected_exp))
-    elif method_selected_exp in methods_pseudo: 
-        st.markdown("You are using the Pseudo-label-based Model Generation Method: {}".format(method_selected_exp))
+        st.markdown("You are using the Model Ensembling Method: {}".format(method_selected_exp))
+    elif method_selected_exp in methods_generation: 
+        st.markdown("You are using the Model Generation Method: {}".format(method_selected_exp))
 
     if dataset_exp == 'Upload your own':
         uploaded_ts = st.file_uploader("Upload your time series")
         if uploaded_ts is not None: 
-            ts_data_raw = pd.read_csv(uploaded_ts, header=None).dropna().to_numpy()
+            ts_data_raw = pd.read_csv(uploaded_ts).dropna()
     else:
-        path_ts = 'data/benchmark_ts/' + dataset_exp + '/' + time_series_selected_exp[:-4] + '.zip'
-        ts_data_raw = pd.read_csv(path_ts, compression='zip', header=None).dropna().to_numpy()
-    
+        # path_ts = 'data/benchmark_ts/' + dataset_exp + '/' + time_series_selected_exp[:-4] + '.zip'
+        # ts_data_raw = pd.read_csv(path_ts, compression='zip', header=None).dropna().to_numpy()
+        path_ts = 'data/preloaded_ts/' + time_series_selected_exp
+        ts_data_raw = pd.read_csv(path_ts).dropna()
+
     if dataset_exp != 'Upload your own' or uploaded_ts is not None:
-        ts_data = ts_data_raw[:, 0].astype(float)
-        label_data = ts_data_raw[:, 1]
+        ts_data = ts_data_raw.iloc[:, 0:-1].values.astype(float).squeeze()
+        label_data = ts_data_raw['Label'].astype(int).to_numpy()
             
         anom = add_rect(label_data, ts_data)
         fig = go.Figure()
@@ -373,14 +380,15 @@ with tab_exploration:
                 st.dataframe(sorted_df_display)
 
             else:
-                pred_detector, success, vote_summary = run_model(ts_data, method_selected_exp)
+                pred_detector, success, vote_summary = run_model(ts_data.reshape(-1, 1), method_selected_exp)
+                print('pred_detector: ', pred_detector)
+
                 if success:
                     st.markdown(f"###### Voting details:")
                     st.bar_chart(vote_summary, height=150)
                     st.markdown(f"##### :star: Selected Model: {pred_detector}")
 
-                    model_to_use = det_name_mapping.inverse[pred_detector]
-                    Anomaly_score = gen_as_from_det(ts_data.reshape(-1, 1), model_to_use)
+                    Anomaly_score = gen_as_from_det(ts_data.reshape(-1, 1), pred_detector)
                     if Anomaly_score is not None:
 
                         mean_score = np.mean(Anomaly_score)
@@ -409,4 +417,4 @@ with tab_exploration:
 
                         st.plotly_chart(fig, use_container_width=True)
                 else:
-                    st.markdown(f"#### Failed at generating results... Please visit our Github repo for more information (https://github.com/TheDatumOrg/AutoTSAD)")
+                    st.markdown(f"#### Failed at generating results... Please visit our Github repo for more information (https://github.com/TheDatumOrg/TSB-AutoAD)")
