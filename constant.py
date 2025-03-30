@@ -48,7 +48,7 @@ User_Manual = f"""
 
 (d) Exploring the model selected distribution and the effect of domain shift
 
-(e) Testing on your own data (Be sure to follow the format of TSB-UAD Benchmark)
+(e) Testing on your own data (Be sure to follow the format of TSB-AD Benchmark)
 
 """
 
