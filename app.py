@@ -316,9 +316,18 @@ with tab_exploration:
 
     col_dataset_exp, col_ts_exp, col_meth_exp, col_gen_result = st.columns([1, 1, 1, 1])
     with col_dataset_exp:
-        dataset_exp = st.selectbox('Pick a dataset', list(set(df['dataset'].values))+['Upload your own'])
+        # dataset_exp = st.selectbox('Pick a dataset', list(set(df['dataset'].values))+['Upload your own'])
+        dataset_exp = st.selectbox('Pick a dataset', ['Upload your own', 'TSB-AD'])
     with col_ts_exp:
-        time_series_selected_exp = st.selectbox('Pick a time series', list(df.loc[df['dataset']==dataset_exp].index))
+        if dataset_exp == 'TSB-AD':
+            time_series_selected_exp = st.selectbox(
+                'Pick a time series', 
+                list(df.index)
+            )
+        else:
+            time_series_selected_exp = None
+        # time_series_selected_exp = st.selectbox('Pick a time series', list(df.loc[df['dataset']==dataset_exp].index))
+    
     with col_meth_exp:
         if dataset_exp == 'Upload your own':
             method_selected_exp = st.selectbox('Pick a method', available_solution)
