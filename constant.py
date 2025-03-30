@@ -100,7 +100,7 @@ description_dataset = f"""
 
 description_candidate = f"""
 
-#### 4. Candidate Model Set
+#### 3. Candidate Model Set
 
 ##### (i) Statistical Method
 
