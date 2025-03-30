@@ -1,5 +1,3 @@
-from bidict import bidict
-
 list_measures = ['VUS-PR', 'VUS-ROC', 'AUC-PR', 'AUC-ROC', 'Standard-F1', 'Affiliation-F', 'Event-based-F1', 'PA-F1', 'R-based-F1']
 
 baseline = ['Oracle', 'SS', 'Random', 'GB', 'FM']
