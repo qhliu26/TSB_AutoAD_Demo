@@ -385,7 +385,7 @@ with tab_exploration:
 
                 if success:
                     st.markdown(f"###### Voting details:")
-                    st.bar_chart(vote_summary, height=150)
+                    st.bar_chart(vote_summary, height=300)
                     st.markdown(f"##### :star: Selected Model: {pred_detector}")
 
                     Anomaly_score = gen_as_from_det(ts_data.reshape(-1, 1), pred_detector)
