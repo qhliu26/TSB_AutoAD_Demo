@@ -49,7 +49,7 @@ df = df.set_index('filename')
 tab_desc, tab_benchmark, tab_eva, tab_exploration = st.tabs(["Overview", "Benchmark", "Evaluation", "Data Exploration"]) 
 
 with tab_desc:
-    st.markdown("## :surfer: Dive into EasyAD")
+    st.markdown("## 🏄 Dive into EasyAD")
     st.markdown("##### Automated Solutions for Time-Series Anomaly Detection")
     image = Image.open('figures/demo_sys.png')
     st.image(image)
